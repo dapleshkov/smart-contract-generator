@@ -13,7 +13,8 @@ public class ContractFieldBuilder {
 
     @Override
     public String toString() {
-        return new StringBuilder(type)
+        return new StringBuilder("\t")
+                .append(type)
                 .append(" ")
                 .append(name)
                 .append(" = ")

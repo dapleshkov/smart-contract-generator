@@ -2,14 +2,14 @@ package com.pleshkov.smartcontractgenerator.model.solidity;
 
 public class ContractFunction {
 
-    public static final String GET_TOKEN_URI_NO_REVEAL = "function tokenURI(uint256 _tokenId) public view virtual override\n" +
+    public static final String GET_TOKEN_URI_NO_REVEAL = "\tfunction tokenURI(uint256 _tokenId) public view virtual override\n" +
             "\t\treturns (string memory) \n" +
             "\t{\n" +
             "\t\trequire(_exists(_tokenId), \"ERC721Metadata: URI query for nonexistent token\");\n" +
             "\t\treturn string(abi.encodePacked(uri, _tokenId.toString()));\n" +
             "\t}\n";
 
-    public static final String GET_TOKEN_URI_WITH_REVEAL = "function tokenURI(uint256 _tokenId) public view virtual override\n" +
+    public static final String GET_TOKEN_URI_WITH_REVEAL = "\tfunction tokenURI(uint256 _tokenId) public view virtual override\n" +
             "\t\treturns (string memory) \n" +
             "\t{\n" +
             "\t\trequire(_exists(_tokenId), \"ERC721Metadata: URI query for nonexistent token\");\n" +
@@ -20,21 +20,21 @@ public class ContractFunction {
             "\t\t}\n" +
             "\t}\n";
 
-    public static final String PUBLIC_MINT = "function publicMint(\n" +
-            "        uint256 _numOfTokens\n" +
-            "    )\n" +
-            "        public\n" +
-            "        payable\n" +
-            "    {\n" +
-            "        require(isMintActive, 'Public mint is not active now!');\n" +
-            "        require(_numOfTokens <= maxMint, \"You are trying to mint too many tokens!\");\n" +
-            "        require(totalSupply().add(_numOfTokens) <= MAX_NFT, \"There are less non minted tokens than you are trying to mint!\");\n" +
-            "        require(cost.mul(_numOfTokens) == msg.value, \"Ether amount is not correct\");\n" +
+    public static final String PUBLIC_MINT = "\tfunction publicMint(\n" +
+            "\t\tuint256 _numOfTokens\n" +
+            "\t)\n" +
+            "\t\tpublic\n" +
+            "\t\tpayable\n" +
+            "\t{\n" +
+            "\t\trequire(isMintActive, 'Public mint is not active now!');\n" +
+            "\t\trequire(_numOfTokens <= maxMint, \"You are trying to mint too many tokens!\");\n" +
+            "\t\trequire(totalSupply().add(_numOfTokens) <= MAX_NFT, \"There are less non minted tokens than you are trying to mint!\");\n" +
+            "\t\trequire(cost.mul(_numOfTokens) == msg.value, \"Ether amount is not correct\");\n" +
             "        \n" +
-            "        for(uint j = 0; j < _numOfTokens; j++) {\n" +
-            "            _safeMint(msg.sender, totalSupply());\n" +
-            "        }\n" +
-            "    }\n";
+            "\t\tfor(uint j = 0; j < _numOfTokens; j++) {\n" +
+            "\t\t\t_safeMint(msg.sender, totalSupply());\n" +
+            "\t\t}\n" +
+            "\t}\n";
 
     public static final String WITHDRAW_WITH_ADDRESS_PARAMETER = "\tfunction withdraw() public onlyOwner \n" +
             "\t{\n" +
@@ -75,47 +75,47 @@ public class ContractFunction {
     //optional
 
     //if you want to use merkle than you can't configure whole mint amount
-    public static final String PRESALE_MINT_MERKLE = "function mintNFTDuringPresale(\n" +
-            "        uint256 _numOfTokens,\n" +
-            "        bytes32[] memory _proof\n" +
-            "    ) \n" +
-            "        public \n" +
-            "        payable\n" +
-            "    {\n" +
-            "        require(isPresaleActive, 'Premint is not active now!');\n" +
-            "        require(verifyMerkleProof(_proof, bytes32(uint256(uint160(msg.sender)))), \"You are not allowed to mint at this phase!\");\n" +
-            "        require(totalSupply() < MAX_NFT, 'All tokens have been minted');\n" +
-            "        require(_numOfTokens <= 1, \"You are trying to mint too many tokens!\");\n" +
-            "        whiteListMinted[msg.sender] = true;\n" +
-            "        _safeMint(msg.sender, totalSupply());\n" +
-            "    }\n";
+    public static final String PRESALE_MINT_MERKLE = "\tfunction mintNFTDuringPresale(\n" +
+            "\t\tuint256 _numOfTokens,\n" +
+            "\t\tbytes32[] memory _proof\n" +
+            "\t) \n" +
+            "\t\tpublic \n" +
+            "\t\tpayable\n" +
+            "\t{\n" +
+            "\t\trequire(isPresaleActive, 'Premint is not active now!');\n" +
+            "\t\trequire(verifyMerkleProof(_proof, bytes32(uint256(uint160(msg.sender)))), \"You are not allowed to mint at this phase!\");\n" +
+            "\t\trequire(totalSupply() < MAX_NFT, 'All tokens have been minted');\n" +
+            "\t\trequire(_numOfTokens <= 1, \"You are trying to mint too many tokens!\");\n" +
+            "\t\twhiteListMinted[msg.sender] = true;\n" +
+            "\t\t_safeMint(msg.sender, totalSupply());\n" +
+            "\t}\n";
 
-    public static final String PRESALE_MINT_ARRAY = "function mintNFTDuringPresale(\n" +
-            "        uint256 _numOfTokens,\n" +
-            "    ) \n" +
-            "        public \n" +
-            "        payable\n" +
-            "    {\n" +
-            "        require(isPresaleActive, 'Premint is not active now!');\n" +
-            "        require(whitelist[msg.sender] >= _numOfTokens), \"You are not allowed to mint this amount of tokens!\");\n" +
-            "        require(totalSupply() < MAX_NFT, 'All tokens have been minted');\n" +
-            "        whiteListMinted[msg.sender] = true;\n" +
-            "        _safeMint(msg.sender, totalSupply());\n" +
-            "    }\n";
+    public static final String PRESALE_MINT_ARRAY = "\tfunction mintNFTDuringPresale(\n" +
+            "\t\tuint256 _numOfTokens,\n" +
+            "\t) \n" +
+            "\t\tpublic \n" +
+            "\t\t\tpayable\n" +
+            "\t{\n" +
+            "\t\trequire(isPresaleActive, 'Premint is not active now!');\n" +
+            "\t\trequire(whitelist[msg.sender] >= _numOfTokens), \"You are not allowed to mint this amount of tokens!\");\n" +
+            "\t\trequire(totalSupply() < MAX_NFT, 'All tokens have been minted');\n" +
+            "\t\twhiteListMinted[msg.sender] = true;\n" +
+            "\t\t_safeMint(msg.sender, totalSupply());\n" +
+            "\t}\n";
 
-    public static final String VERIFY_MERKLE_PROOF = "function verifyMerkleProof(bytes32[] memory proof, bytes32 leaf) public view returns (bool) {\n" +
-            "        bytes32 currentHash = leaf;\n" +
-            "        for (uint256 j = 0; j < proof.length; j++) {\n" +
-            "            bytes32 currentProof = proof[j];\n" +
+    public static final String VERIFY_MERKLE_PROOF = "\tfunction verifyMerkleProof(bytes32[] memory proof, bytes32 leaf) public view returns (bool) {\n" +
+            "\t\tbytes32 currentHash = leaf;\n" +
+            "\t\tfor (uint256 j = 0; j < proof.length; j++) {\n" +
+            "\t\t\tbytes32 currentProof = proof[j];\n" +
             "            \n" +
-            "            if (currentHash <= currentProof) {\n" +
-            "                currentHash = sha256(abi.encodePacked(currentHash, currentProof));\n" +
-            "            } else {\n" +
-            "                currentHash = sha256(abi.encodePacked(currentProof, currentHash));\n" +
-            "            }\n" +
-            "        }\n" +
-            "        return currentHash == merkleRoot;\n" +
-            "    }\n";
+            "\t\t\t\tif (currentHash <= currentProof) {\n" +
+            "\t\t\t\t\tcurrentHash = sha256(abi.encodePacked(currentHash, currentProof));\n" +
+            "\t\t\t\t} else {\n" +
+            "\t\t\t\t\tcurrentHash = sha256(abi.encodePacked(currentProof, currentHash));\n" +
+            "\t\t\t\t}\n" +
+            "\t\t\t}\n" +
+            "\t\treturn currentHash == merkleRoot;\n" +
+            "\t}\n";
 
     public static final String REVEAL = "\tfunction reveal() external onlyOwner \n" +
             "\t{\n" +
@@ -125,12 +125,12 @@ public class ContractFunction {
             "\tisPremintActive = _isPremintActive;\n" +
             "\t}\n";
 
-    public static final String ADD_TO_WHITELIST = "    function addToWhitelist(\n" +
-            "        address[] calldata _addresses,\n" +
-            "        uint256[] calldata _amounts\n" +
-            "    ) public onlyOwner {\n" +
-            "        for (uint256 j; j < _addresses.length; j++) {\n" +
-            "            whitelist[_addresses[j]] = _amounts[j];\n" +
-            "        }\n" +
-            "    }\n";
+    public static final String ADD_TO_WHITELIST = "\tfunction addToWhitelist(\n" +
+            "\t\taddress[] calldata _addresses,\n" +
+            "\t\tuint256[] calldata _amounts\n" +
+            "\t) public onlyOwner {\n" +
+            "\t\tfor (uint256 j; j < _addresses.length; j++) {\n" +
+            "\t\t\twhitelist[_addresses[j]] = _amounts[j];\n" +
+            "\t\t}\n" +
+            "\t}\n";
 }

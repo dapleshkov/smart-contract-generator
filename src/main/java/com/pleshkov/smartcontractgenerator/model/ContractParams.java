@@ -2,8 +2,6 @@ package com.pleshkov.smartcontractgenerator.model;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 @Data
 public class ContractParams {
 
@@ -29,4 +27,5 @@ public class ContractParams {
     private Boolean setBaseUri;//done
 
     private Boolean usePaymentSplitter;//optional
+    private Boolean addSupportiveContracts;
 }

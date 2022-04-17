@@ -20,6 +20,7 @@ import java.util.Optional;
 public class ContractAppender {
 
     private final GasTracker gasTracker;
+    private final LibraryLoader libraryLoader;
 
     public ContractResponse createContract(ContractParams params) {
         StringBuilder contract = new StringBuilder();
@@ -36,7 +37,11 @@ public class ContractAppender {
         contract.append(createFunctions(params));
 
 
-        contract.append("}");
+        contract.append("}\n");
+
+        if(params.getAddSupportiveContracts()) {
+            libraryLoader.getLibraryContracts().forEach((key, value) -> contract.append(value));
+        }
         return new ContractResponse(contract.toString(), gasTracker.getGas());
     }
 
@@ -93,11 +98,12 @@ public class ContractAppender {
 
         if (params.getSetWhitelist()) {
             if (params.getWhitelistType() == Whitelist.ARRAY) {
-                fields.add("mapping(address => uint256) whitelist;\n");
+                fields.add("\tmapping(address => uint256) whitelist;\n");
             } else {
-                fields.add(new ContractFieldBuilder("bytes32 public", "merkleRoot", params.getMerkleRoot()).toString());
+                fields.add(new ContractFieldBuilder("\tbytes32 public", "merkleRoot", params.getMerkleRoot()).toString());
             }
         }
+        fields.add("\n");
 
         return fields.stream().reduce((a, b) -> a + b).get();
     }

@@ -41,4 +41,9 @@ public class LibraryLoader {
             }
         });
     }
+
+
+    public Map<String, String> getLibraryContracts() {
+        return libraryContracts;
+    }
 }
