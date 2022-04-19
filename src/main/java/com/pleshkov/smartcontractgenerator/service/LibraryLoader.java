@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,11 @@ public class LibraryLoader {
 
     private final Map<String, String> libraryContracts = new LinkedCaseInsensitiveMap<>();
 
-    private final List<String> contracts = List.of("IERC165.sol", "IERC721.sol", "IERC721Receiver.sol",
+    private final List<String> contracts = new LinkedList<String>(Arrays.asList("IERC165.sol", "IERC721.sol", "IERC721Receiver.sol",
             "IERC721Metadata.sol", "Address.sol", "Context.sol",
             "Strings.sol", "ERC165.sol", "ERC721.sol", "IERC721Enumerable.sol",
-            "ERC721Enumerable.sol", "SafeMath.sol", "Ownable.sol");
+            "ERC721Enumerable.sol", "SafeMath.sol", "Ownable.sol")) {
+    };
 
     @PostConstruct
     public void loadContracts() {

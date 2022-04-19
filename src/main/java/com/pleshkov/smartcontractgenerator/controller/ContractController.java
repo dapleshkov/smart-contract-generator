@@ -21,7 +21,7 @@ public class ContractController {
     public ResponseEntity<ContractResponse> getContract(ContractParams params){
 
 //        log.info("trying to create contract with parameters: " + params);
-        var a = appender.createContract(params);
+        ContractResponse a = appender.createContract(params);
         log.info(a.toString());
         return new ResponseEntity<>( a, HttpStatus.OK);
     }
