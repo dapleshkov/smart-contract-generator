@@ -16,4 +16,5 @@ public class ContractFieldBuilderTest {
 
         assertEquals(expected, actual);
     }
+
 }

@@ -21,8 +21,9 @@ public class ContractAppender {
 
     private final GasTracker gasTracker;
     private final LibraryLoader libraryLoader;
+    private final CodeAppender codeAppender;
 
-    public ContractResponse createContract(ContractParams params) {
+    public String createContract(ContractParams params) {
         StringBuilder contract = new StringBuilder();
         ContractCoreBuilder coreBuilder = ContractCoreBuilder.builder()
                 .contractName(params.getContractName())
@@ -42,21 +43,41 @@ public class ContractAppender {
         if(params.getAddSupportiveContracts()) {
             libraryLoader.getLibraryContracts().forEach((key, value) -> contract.append(value));
         }
-        return new ContractResponse(contract.toString(), gasTracker.getGas());
+        return contract.toString();
     }
 
-    private String createFunctions(ContractParams params) {
+    public String createFunctions(ContractParams params) {
         StringBuilder functions = new StringBuilder();
 
         functions.append(ContractFunction.PUBLIC_MINT);
         functions.append(String.format(ContractFunction.WITHDRAW_WITH_ADDRESS_PARAMETER, params.getOwnerAddress()));
-        functions.append(ContractFunction.SET_COST);
-        functions.append(ContractFunction.SET_MAX_MINT);
-        functions.append(ContractFunction.SET_SUPPLY);
-        functions.append(ContractFunction.SET_OWNER_ADDRESS);
-        functions.append(ContractFunction.SET_BASE_URI);
-        functions.append(ContractFunction.SET_COST);
         functions.append(ContractFunction.SET_MINT_ACTIVE);
+
+        codeAppender.tryToAppend(
+                params.getSetCost(),
+                ContractFunction.SET_COST,
+                functions
+        );
+        codeAppender.tryToAppend(
+                params.getSetCost(),
+                ContractFunction.SET_MAX_MINT,
+                functions
+        );
+        codeAppender.tryToAppend(
+                params.getSetCost(),
+                ContractFunction.SET_SUPPLY,
+                functions
+        );
+        codeAppender.tryToAppend(
+                params.getSetCost(),
+                ContractFunction.SET_OWNER_ADDRESS,
+                functions
+        );
+        codeAppender.tryToAppend(
+                params.getSetCost(),
+                ContractFunction.SET_BASE_URI,
+                functions
+        );
 
         //add functions if premint is active
         if (params.getSetWhitelist()) {
@@ -73,20 +94,20 @@ public class ContractAppender {
 
         //add functions if reveal is active
         if (params.getSetReveal()) {
-            functions.append(ContractFunction.SET_BLIND_URI);
+            functions.append(ContractFunction.SET_MOCK_URI);
             functions.append(ContractFunction.REVEAL);
             functions.append(ContractFunction.GET_TOKEN_URI_WITH_REVEAL);
         } else {
             functions.append(ContractFunction.GET_TOKEN_URI_NO_REVEAL);
         }
+        functions.append(ContractFunction.STANDART_FUNCTIONS_TO_OVERRIDE);
         return functions.toString();
     }
 
-    private String createFields(ContractParams params) {
+    public String createFields(ContractParams params) {
         List<String> fields = new LinkedList<>();
         fields.add(new ContractFieldBuilder("string private", "uri", params.getBaseUri()).toString());
         fields.add(new ContractFieldBuilder("bool public", "isMintActive", String.valueOf(false)).toString());
-        fields.add(new ContractFieldBuilder("bool public", "isPremintActive", String.valueOf(false)).toString());
 
         //if reveal
         fields.add(new ContractFieldBuilder("string private", "mockUri", params.getBaseUri()).toString());
@@ -100,8 +121,14 @@ public class ContractAppender {
             if (params.getWhitelistType() == Whitelist.ARRAY) {
                 fields.add("\tmapping(address => uint256) whitelist;\n");
             } else {
-                fields.add(new ContractFieldBuilder("\tbytes32 public", "merkleRoot", params.getMerkleRoot()).toString());
+                fields.add(new ContractFieldBuilder("bytes32 public", "merkleRoot", params.getMerkleRoot()).toString());
             }
+        }
+        if(params.getSetWhitelist()){
+            fields.add(new ContractFieldBuilder("bool public", "isPremintActive", String.valueOf(false)).toString());
+        }
+        if(params.getSetReveal()){
+            fields.add(new ContractFieldBuilder("bool public", "reveal", String.valueOf(false)).toString());
         }
         fields.add("\n");
 

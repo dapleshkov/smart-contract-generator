@@ -28,7 +28,7 @@ public class ContractFunction {
             "\t{\n" +
             "\t\trequire(isMintActive, 'Public mint is not active now!');\n" +
             "\t\trequire(_numOfTokens <= maxMint, \"You are trying to mint too many tokens!\");\n" +
-            "\t\trequire(totalSupply().add(_numOfTokens) <= MAX_NFT, \"There are less non minted tokens than you are trying to mint!\");\n" +
+            "\t\trequire(totalSupply().add(_numOfTokens) <= supply, \"There are less non minted tokens than you are trying to mint!\");\n" +
             "\t\trequire(cost.mul(_numOfTokens) == msg.value, \"Ether amount is not correct\");\n" +
             "        \n" +
             "\t\tfor(uint j = 0; j < _numOfTokens; j++) {\n" +
@@ -46,30 +46,30 @@ public class ContractFunction {
     //set functions
 
     public static final String SET_COST = "\tfunction setCost(uint256 _newCost) public onlyOwner {\n" +
-            "\tcost = _newCost;\n" +
+            "\t\tcost = _newCost;\n" +
             "\t}\n";
     public static final String SET_MAX_MINT = "\tfunction setMaxMintAmount(uint256 _newMaxMintAmount) public onlyOwner {\n" +
-            "\tmaxMint = _newMaxMintAmount;\n" +
+            "\t\tmaxMint = _newMaxMintAmount;\n" +
             "\t}\n";
     public static final String SET_SUPPLY = "\tfunction setSupply(uint256 _newSupply) public onlyOwner {\n" +
-            "\tsupply = _newSupply;\n" +
+            "\t\tsupply = _newSupply;\n" +
             "\t}\n";
     public static final String SET_OWNER_ADDRESS = "\tfunction setOwnerAddress(address _newOwnerAddress) public onlyOwner {\n" +
-            "\townerAddress = _newOwnerAddress;\n" +
+            "\t\townerAddress = _newOwnerAddress;\n" +
             "\t}\n";
     public static final String SET_BASE_URI = "\tfunction setUri(string memory _newUri) public onlyOwner {\n" +
-            "\turi = _newUri;\n" +
+            "\t\turi = _newUri;\n" +
             "\t}\n";
 
 
     public static final String SET_MERKLE_ROOT = "\tfunction setRoot(uint256 _root) onlyOwner() public {\n" +
-            "\tmerkleRoot = bytes32(_root);\n" +
+            "\t\tmerkleRoot = bytes32(_root);\n" +
             "\t}\n";
-    public static final String SET_BLIND_URI = "\tfunction setBlindUri(string memory _newBlindUri) public onlyOwner {\n" +
-            "\tblindUri = _newBlindUri;\n" +
+    public static final String SET_MOCK_URI = "\tfunction setMockUri(string memory _newMockUri) public onlyOwner {\n" +
+            "\t\tmockUri = _newMockUri;\n" +
             "\t}\n";
     public static final String SET_MINT_ACTIVE = "\tfunction setMintActive(bool _isMintActive) onlyOwner() public {\n" +
-            "\tisMintActive = _isMintActive;\n" +
+            "\t\tisMintActive = _isMintActive;\n" +
             "\t}\n";
 
     //optional
@@ -82,24 +82,23 @@ public class ContractFunction {
             "\t\tpublic \n" +
             "\t\tpayable\n" +
             "\t{\n" +
-            "\t\trequire(isPresaleActive, 'Premint is not active now!');\n" +
+            "\t\trequire(isPremintActive, 'Premint is not active now!');\n" +
             "\t\trequire(verifyMerkleProof(_proof, bytes32(uint256(uint160(msg.sender)))), \"You are not allowed to mint at this phase!\");\n" +
-            "\t\trequire(totalSupply() < MAX_NFT, 'All tokens have been minted');\n" +
+            "\t\trequire(totalSupply().add(1) <= supply, 'There are less non minted tokens than you are trying to mint!');\n" +
             "\t\trequire(_numOfTokens <= 1, \"You are trying to mint too many tokens!\");\n" +
-            "\t\twhiteListMinted[msg.sender] = true;\n" +
             "\t\t_safeMint(msg.sender, totalSupply());\n" +
             "\t}\n";
 
     public static final String PRESALE_MINT_ARRAY = "\tfunction mintNFTDuringPresale(\n" +
-            "\t\tuint256 _numOfTokens,\n" +
+            "\t\tuint256 _numOfTokens\n" +
             "\t) \n" +
             "\t\tpublic \n" +
             "\t\t\tpayable\n" +
             "\t{\n" +
-            "\t\trequire(isPresaleActive, 'Premint is not active now!');\n" +
-            "\t\trequire(whitelist[msg.sender] >= _numOfTokens), \"You are not allowed to mint this amount of tokens!\");\n" +
-            "\t\trequire(totalSupply() < MAX_NFT, 'All tokens have been minted');\n" +
-            "\t\twhiteListMinted[msg.sender] = true;\n" +
+            "\t\trequire(isPremintActive, 'Premint is not active now!');\n" +
+            "\t\trequire(whitelist[msg.sender] >= _numOfTokens, \"You are not allowed to mint this amount of tokens!\");\n" +
+            "\t\trequire(totalSupply().add(_numOfTokens) <= supply, \"There are less non minted tokens than you are trying to mint!\");\n" +
+            "\t\twhitelist[msg.sender] = whitelist[msg.sender] + _numOfTokens;\n" +
             "\t\t_safeMint(msg.sender, totalSupply());\n" +
             "\t}\n";
 
@@ -117,7 +116,7 @@ public class ContractFunction {
             "\t\treturn currentHash == merkleRoot;\n" +
             "\t}\n";
 
-    public static final String REVEAL = "\tfunction reveal() external onlyOwner \n" +
+    public static final String REVEAL = "\tfunction makeReveal() external onlyOwner \n" +
             "\t{\n" +
             "\t\treveal = true;\n" +
             "\t}\n";
@@ -132,5 +131,27 @@ public class ContractFunction {
             "\t\tfor (uint256 j; j < _addresses.length; j++) {\n" +
             "\t\t\twhitelist[_addresses[j]] = _amounts[j];\n" +
             "\t\t}\n" +
+            "\t}\n";
+
+    public static final String STANDART_FUNCTIONS_TO_OVERRIDE = "\tfunction supportsInterface(\n" +
+            "\t\tbytes4 _interfaceId\n" +
+            "\t) \n" +
+            "\t\tpublic\n" +
+            "\t\tview \n" +
+            "\t\toverride (ERC721, ERC721Enumerable) \n" +
+            "\t\treturns (bool) \n" +
+            "\t{\n" +
+            "\t\treturn super.supportsInterface(_interfaceId);\n" +
+            "\t}\n" +
+            "\n" +
+            "\tfunction _beforeTokenTransfer(\n" +
+            "\t\taddress _from, \n" +
+            "\t\taddress _to, \n" +
+            "\t\tuint256 _tokenId\n" +
+            "\t) \n" +
+            "\t\tinternal \n" +
+            "\t\t override(ERC721, ERC721Enumerable) \n" +
+            "\t{\n" +
+            "\t\tsuper._beforeTokenTransfer(_from, _to, _tokenId);\n" +
             "\t}\n";
 }

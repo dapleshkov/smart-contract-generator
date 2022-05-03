@@ -7,7 +7,15 @@ public class CodeAppender {
 
     public void tryToAppend(Object field, String code, StringBuilder builder){
         if(field != null){
-            builder.append(code);
+            if (field instanceof Boolean){
+                if ((Boolean)field){
+                    builder.append(code);
+                }
+            }
+            else {
+                builder.append(code);
+            }
         }
+
     }
 }

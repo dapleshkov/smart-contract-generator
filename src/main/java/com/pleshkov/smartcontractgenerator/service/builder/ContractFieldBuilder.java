@@ -13,12 +13,24 @@ public class ContractFieldBuilder {
 
     @Override
     public String toString() {
-        return new StringBuilder("\t")
+        boolean isString = type.startsWith("string") || type.startsWith("bytes32");
+        StringBuilder builder = new StringBuilder("\t")
                 .append(type)
                 .append(" ")
                 .append(name)
-                .append(" = ")
-                .append(value)
-                .append(";\n").toString();
+                .append(" = ");
+
+        if (isString) {
+            builder.append("\"");
+        }
+
+        builder.append(value);
+
+        if (isString) {
+            builder.append("\"");
+        }
+
+        builder.append(";\n");
+        return builder.toString();
     }
 }
