@@ -5,24 +5,26 @@ import com.pleshkov.smartcontractgenerator.model.Whitelist;
 import com.pleshkov.smartcontractgenerator.service.ContractAppender;
 import com.pleshkov.smartcontractgenerator.service.GasTracker;
 import com.pleshkov.smartcontractgenerator.service.LibraryLoader;
+import com.pleshkov.smartcontractgenerator.service.util.CodeAppender;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.*;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+
 class ContractAppenderFieldsTest {
 
-	@MockBean
-	GasTracker gasTracker;
-	@MockBean
-	LibraryLoader libraryLoader;
+	private final GasTracker gasTracker = mock(GasTracker.class);
 
-	@InjectMocks
-	private ContractAppender appender ;
+	private final LibraryLoader libraryLoader = new LibraryLoader();
+
+	private final CodeAppender codeAppender = new CodeAppender();
+
+	private ContractAppender appender = new ContractAppender(
+			gasTracker, libraryLoader, codeAppender);
 
 	@Test
 	void testMerkleRootField_WhenWhitelistMerkleEnabled(){
@@ -60,9 +62,9 @@ class ContractAppenderFieldsTest {
 	}
 
 	@Test
-	void testPremintField_WhenRevealEnabled(){
+	void testPremintField_WhenWhitelistEnabled(){
 		ContractParams params = Mockito.mock(ContractParams.class);
-		when(params.getSetReveal()).thenReturn(true);
+		when(params.getSetWhitelist()).thenReturn(true);
 
 		String result = appender.createFields(params);
 

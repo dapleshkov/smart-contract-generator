@@ -118,14 +118,12 @@ public class ContractAppender {
         fields.add(new ContractFieldBuilder("uint256 public", "maxMint", params.getMaxMint().toString()).toString());
 
         if (params.getSetWhitelist()) {
+            fields.add(new ContractFieldBuilder("bool public", "isPremintActive", String.valueOf(false)).toString());
             if (params.getWhitelistType() == Whitelist.ARRAY) {
                 fields.add("\tmapping(address => uint256) whitelist;\n");
             } else {
                 fields.add(new ContractFieldBuilder("bytes32 public", "merkleRoot", params.getMerkleRoot()).toString());
             }
-        }
-        if(params.getSetWhitelist()){
-            fields.add(new ContractFieldBuilder("bool public", "isPremintActive", String.valueOf(false)).toString());
         }
         if(params.getSetReveal()){
             fields.add(new ContractFieldBuilder("bool public", "reveal", String.valueOf(false)).toString());

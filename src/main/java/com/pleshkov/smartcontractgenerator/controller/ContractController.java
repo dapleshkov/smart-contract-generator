@@ -24,17 +24,12 @@ public class ContractController {
     private final ContractLoader loader;
     private final ContractSaver saver;
 
-    @GetMapping("/gett")
+    @GetMapping("/contract")
     public ResponseEntity<Contract> getContract(String id){
         Contract contract = loader.loadContract(id);
         return new ResponseEntity<>( contract, HttpStatus.OK);
     }
 
-
-    @GetMapping("new")
-    public void saveContract(String id, String code){
-        saver.saveContract(code, id);
-    }
 
     @PostMapping("/contract")
     public ResponseEntity<ContractResponse> getContract(ContractParams params){

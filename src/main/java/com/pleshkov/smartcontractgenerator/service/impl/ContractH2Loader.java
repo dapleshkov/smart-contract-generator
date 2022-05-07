@@ -18,6 +18,7 @@ public class ContractH2Loader implements ContractLoader {
 
     @Override
     public Contract loadContract(String contractId) {
-        return repository.select(contractId);
+        String code =  repository.select(contractId);
+        return new Contract(contractId, code);
     }
 }

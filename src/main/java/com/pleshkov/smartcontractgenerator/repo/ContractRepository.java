@@ -18,11 +18,10 @@ public class ContractRepository {
     public static final String SELECT_QUERY = "SELECT CONTRACT.CODE FROM CONTRACT WHERE id = :id";
     public static final String INSERT_QUERY = "INSERT into CONTRACT(id, code) VALUES ( :id, :code)";
 
-    public Contract select(String contractId) {
+    public String select(String contractId) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", contractId);
-        String code = template.queryForObject(SELECT_QUERY, parameters, String.class);
-        return new Contract(contractId, code);
+        return template.queryForObject(SELECT_QUERY, parameters, String.class);
     }
 
     public void save(String code, String id) {
