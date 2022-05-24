@@ -13,7 +13,7 @@ public class ContractFieldBuilder {
 
     @Override
     public String toString() {
-        boolean isString = type.startsWith("string") || type.startsWith("bytes32");
+        boolean isString = type.startsWith("string");
         StringBuilder builder = new StringBuilder("\t")
                 .append(type)
                 .append(" ")

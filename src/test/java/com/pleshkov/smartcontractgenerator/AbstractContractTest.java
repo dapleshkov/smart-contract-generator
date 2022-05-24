@@ -1,7 +1,6 @@
 package com.pleshkov.smartcontractgenerator;
 
-import com.pleshkov.smartcontractgenerator.service.GasTracker;
-import com.pleshkov.smartcontractgenerator.service.LibraryLoader;
+import com.pleshkov.smartcontractgenerator.repo.LibraryLoader;
 import com.pleshkov.smartcontractgenerator.service.util.CodeAppender;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -15,8 +14,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 public abstract class AbstractContractTest {
 
     public static final String TRUNCATE_QUERY= "TRUNCATE TABLE CONTRACT";
-    @Autowired
-    protected GasTracker gasTracker;
     @Autowired
     protected LibraryLoader libraryLoader;
     @Autowired

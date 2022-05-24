@@ -20,7 +20,7 @@ public class ErrorController extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException e){
         ExceptionResponse response = new ExceptionResponse();
-        response.setError("Null pointer exception");
+        response.setError(e.getMessage());
         response.setStatus(500);
         log.error("Error occurred: ", e);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

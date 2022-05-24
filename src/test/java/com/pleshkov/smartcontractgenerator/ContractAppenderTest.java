@@ -2,8 +2,7 @@ package com.pleshkov.smartcontractgenerator;
 
 import com.pleshkov.smartcontractgenerator.model.ContractParams;
 import com.pleshkov.smartcontractgenerator.service.ContractAppender;
-import com.pleshkov.smartcontractgenerator.service.GasTracker;
-import com.pleshkov.smartcontractgenerator.service.LibraryLoader;
+import com.pleshkov.smartcontractgenerator.repo.LibraryLoader;
 import com.pleshkov.smartcontractgenerator.service.util.CodeAppender;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,14 +13,10 @@ import static org.mockito.Mockito.when;
 
 public class ContractAppenderTest {
 
-    private final GasTracker gasTracker = mock(GasTracker.class);
-
+    private final CodeAppender codeAppender = new CodeAppender();
     private final LibraryLoader libraryLoader = new LibraryLoader();
 
-    private final CodeAppender codeAppender = new CodeAppender();
-
-    private ContractAppender appender = new ContractAppender(
-            gasTracker, libraryLoader, codeAppender);
+    private ContractAppender appender = new ContractAppender(libraryLoader, codeAppender);
 
     @Test
     void testERC721Arguments() {

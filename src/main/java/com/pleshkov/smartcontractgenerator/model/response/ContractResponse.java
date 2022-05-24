@@ -8,6 +8,5 @@ import lombok.Data;
 public class ContractResponse {
 
     private String contractCode;
-    private Double currentCost;
     private String contractId;
 }

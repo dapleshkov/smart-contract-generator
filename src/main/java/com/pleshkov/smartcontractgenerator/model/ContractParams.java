@@ -1,31 +1,51 @@
 package com.pleshkov.smartcontractgenerator.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
+import lombok.Builder;
 import lombok.Data;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Data
+@Builder
 public class ContractParams {
 
     private String contractName;
-    private String collectionName;
+
+   private String collectionName;
+
     private String ownerAddress;
+
     private String ticker;
+
     private Long supply;
+
     private Double cost;
+
     private Long maxMint;
+
     private String merkleRoot;
-    private String baseUri;
+
+     private String baseUri;
+
     private String mockUri;
+
     private Whitelist whitelistType;
 
 
     private Boolean setReveal;
-    private Boolean setCost;//done
-    private Boolean setMaxSupply; //done
-    private Boolean setWhitelist;
-    private Boolean setMaxMint;//done
-    private Boolean setBaseUri;//done
 
-    private Boolean usePaymentSplitter;//optional
+    private Boolean setCost;
+
+    private Boolean setMaxSupply;
+
+    private Boolean setWhitelist;
+
+    private Boolean setMaxMint;
+
+    private Boolean setBaseUri;
+
     private Boolean addSupportiveContracts;
 
     public String getContractName() {
@@ -162,14 +182,6 @@ public class ContractParams {
 
     public void setSetBaseUri(Boolean setBaseUri) {
         this.setBaseUri = setBaseUri;
-    }
-
-    public Boolean getUsePaymentSplitter() {
-        return usePaymentSplitter;
-    }
-
-    public void setUsePaymentSplitter(Boolean usePaymentSplitter) {
-        this.usePaymentSplitter = usePaymentSplitter;
     }
 
     public Boolean getAddSupportiveContracts() {

@@ -2,24 +2,21 @@ package com.pleshkov.smartcontractgenerator.service;
 
 import com.pleshkov.smartcontractgenerator.model.ContractParams;
 import com.pleshkov.smartcontractgenerator.model.Whitelist;
-import com.pleshkov.smartcontractgenerator.model.response.ContractResponse;
 import com.pleshkov.smartcontractgenerator.model.solidity.ContractFunction;
+import com.pleshkov.smartcontractgenerator.repo.LibraryLoader;
 import com.pleshkov.smartcontractgenerator.service.builder.ContractCoreBuilder;
 import com.pleshkov.smartcontractgenerator.service.builder.ContractFieldBuilder;
 import com.pleshkov.smartcontractgenerator.service.util.CodeAppender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ContractAppender {
 
-    private final GasTracker gasTracker;
     private final LibraryLoader libraryLoader;
     private final CodeAppender codeAppender;
 
@@ -50,7 +47,7 @@ public class ContractAppender {
         StringBuilder functions = new StringBuilder();
 
         functions.append(ContractFunction.PUBLIC_MINT);
-        functions.append(String.format(ContractFunction.WITHDRAW_WITH_ADDRESS_PARAMETER, params.getOwnerAddress()));
+        functions.append(ContractFunction.WITHDRAW);
         functions.append(ContractFunction.SET_MINT_ACTIVE);
 
         codeAppender.tryToAppend(
@@ -59,22 +56,22 @@ public class ContractAppender {
                 functions
         );
         codeAppender.tryToAppend(
-                params.getSetCost(),
+                params.getSetMaxMint(),
                 ContractFunction.SET_MAX_MINT,
                 functions
         );
         codeAppender.tryToAppend(
-                params.getSetCost(),
+                params.getSetMaxSupply(),
                 ContractFunction.SET_SUPPLY,
                 functions
         );
         codeAppender.tryToAppend(
-                params.getSetCost(),
+                true,
                 ContractFunction.SET_OWNER_ADDRESS,
                 functions
         );
         codeAppender.tryToAppend(
-                params.getSetCost(),
+                params.getSetBaseUri(),
                 ContractFunction.SET_BASE_URI,
                 functions
         );
@@ -110,7 +107,7 @@ public class ContractAppender {
         fields.add(new ContractFieldBuilder("bool public", "isMintActive", String.valueOf(false)).toString());
 
         //if reveal
-        fields.add(new ContractFieldBuilder("string private", "mockUri", params.getBaseUri()).toString());
+        fields.add(new ContractFieldBuilder("string private", "mockUri", params.getMockUri()).toString());
 
         fields.add(new ContractFieldBuilder("uint256 public", "cost", params.getCost() + " ether").toString());
         fields.add(new ContractFieldBuilder("uint256 public", "supply", params.getSupply().toString()).toString());
@@ -122,7 +119,12 @@ public class ContractAppender {
             if (params.getWhitelistType() == Whitelist.ARRAY) {
                 fields.add("\tmapping(address => uint256) whitelist;\n");
             } else {
-                fields.add(new ContractFieldBuilder("bytes32 public", "merkleRoot", params.getMerkleRoot()).toString());
+                if(params.getMerkleRoot() == null){
+                    fields.add("bytes32 public merkleRoot;");
+                }
+                else {
+                    fields.add(new ContractFieldBuilder("bytes32 public", "merkleRoot", params.getMerkleRoot()).toString());
+                }
             }
         }
         if(params.getSetReveal()){

@@ -19,6 +19,6 @@ public class ContractCreator {
 
          saver.saveContract(contractCode, contractId);
 
-         return new ContractResponse(contractCode, 0d, contractId);
+         return new ContractResponse(contractCode, contractId);
      }
 }

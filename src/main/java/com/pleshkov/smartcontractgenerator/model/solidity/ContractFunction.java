@@ -36,11 +36,11 @@ public class ContractFunction {
             "\t\t}\n" +
             "\t}\n";
 
-    public static final String WITHDRAW_WITH_ADDRESS_PARAMETER = "\tfunction withdraw() public onlyOwner \n" +
+    public static final String WITHDRAW = "\tfunction withdraw() public onlyOwner \n" +
             "\t{\n" +
             "\t\tuint balance = address(this).balance;\n" +
             "\t\trequire(balance > 0, \"Balance should be more then zero\");\n" +
-            "\t\tpayable(address(%s)).transfer(balance);\n" +
+            "\t\tpayable(address(ownerAddress)).transfer(balance);\n" +
             "\t}\n";
 
     //set functions
@@ -98,15 +98,19 @@ public class ContractFunction {
             "\t\trequire(isPremintActive, 'Premint is not active now!');\n" +
             "\t\trequire(whitelist[msg.sender] >= _numOfTokens, \"You are not allowed to mint this amount of tokens!\");\n" +
             "\t\trequire(totalSupply().add(_numOfTokens) <= supply, \"There are less non minted tokens than you are trying to mint!\");\n" +
-            "\t\twhitelist[msg.sender] = whitelist[msg.sender] + _numOfTokens;\n" +
-            "\t\t_safeMint(msg.sender, totalSupply());\n" +
+            "\t\trequire(cost.mul(_numOfTokens) == msg.value, \"Ether amount is not correct\");\n" +
+            "\t\twhitelist[msg.sender] = whitelist[msg.sender] - _numOfTokens;\n" +
+            "\n" +
+            "\t\tfor(uint j = 0; j < _numOfTokens; j++) {\n" +
+            "\t\t\t_safeMint(msg.sender, totalSupply());\n" +
+            "\t\t}\n" +
             "\t}\n";
 
     public static final String VERIFY_MERKLE_PROOF = "\tfunction verifyMerkleProof(bytes32[] memory proof, bytes32 leaf) public view returns (bool) {\n" +
-            "\t\tbytes32 currentHash = leaf;\n" +
+            "\t\tbytes32 currentHash = sha256(abi.encodePacked(leaf));\n" +
             "\t\tfor (uint256 j = 0; j < proof.length; j++) {\n" +
             "\t\t\tbytes32 currentProof = proof[j];\n" +
-            "            \n" +
+            "/\\\\n/g" +
             "\t\t\t\tif (currentHash <= currentProof) {\n" +
             "\t\t\t\t\tcurrentHash = sha256(abi.encodePacked(currentHash, currentProof));\n" +
             "\t\t\t\t} else {\n" +
