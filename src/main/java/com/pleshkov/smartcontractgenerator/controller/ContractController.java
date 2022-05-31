@@ -24,12 +24,12 @@ public class ContractController {
     private final ContractCreator creator;
     private final ContractLoader loader;
 
-//    @GetMapping("/contract")
-//    @ApiOperation("Returns generated contract by ID")
-//    public ResponseEntity<Contract> getContract(String id) {
-//        Contract contract = loader.loadContract(id);
-//        return new ResponseEntity<>(contract, HttpStatus.OK);
-//    }
+    @GetMapping("/contract")
+    @ApiOperation("Returns generated contract by ID")
+    public ResponseEntity<Contract> getContract(String id) {
+        Contract contract = loader.loadContract(id);
+        return new ResponseEntity<>(contract, HttpStatus.OK);
+    }
 
 
     @PostMapping("/contract")
